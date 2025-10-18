@@ -64,7 +64,10 @@ public:
     OutputSettings getUserById(const std::size_t id)
     {
         if (!id || !isOpen())
-            return OutputSettings{};
+        {
+            externLog::log("Trying to work with an empty file or empty id (getUserById).", LogLevel::Error);   
+            return {};
+        }
         sqlite3_stmt *stmt = nullptr;
 
         const char *sql = "SELECT * FROM USERS WHERE ID = ?;";
@@ -95,12 +98,13 @@ public:
         return res;
     }
 
-    
-
     bool addUserByID(const std::size_t id, const OutputSettings &settings)
     {
         if (!id || !isOpen())
+        {
+            externLog::log("Trying to work with an empty file or empty id (addUserByID).", LogLevel::Error);   
             return false;
+        }
 
         sqlite3_stmt *stmt = nullptr;
 
@@ -128,7 +132,10 @@ public:
     bool changeUserPrecession(const std::size_t id, const unsigned char precession)
     {
         if (!id || !isOpen())
+        {
+            externLog::log("Trying to work with an empty file or empty id (changeUserPrecession).", LogLevel::Error);   
             return false;
+        }
         sqlite3_stmt *stmt = nullptr;
 
         if (sqlite3_prepare_v2(DB_.get(), UPDATE_PRECESSION, -1, &stmt, nullptr) != SQLITE_OK)
@@ -153,7 +160,10 @@ public:
     bool changeUserNumberType(const std::size_t id, const mathWorker::ComplexOutputType type)
     {
         if (!id || !isOpen())
+        {
+            externLog::log("Trying to work with an empty file or empty id (changeUserNumberType).", LogLevel::Error);   
             return false;
+        }
         sqlite3_stmt *stmt = nullptr;
 
         if (sqlite3_prepare_v2(DB_.get(), UPDATE_NUMBER, -1, &stmt, nullptr) != SQLITE_OK)
@@ -178,8 +188,10 @@ public:
     bool changeUserAngleType(const std::size_t id, const mathWorker::AngleOutputType type)
     {
         if (!id || !isOpen())
+        {
+            externLog::log("Trying to work with an empty file or empty id (changeUserAngleType).", LogLevel::Error);   
             return false;
-        // TODO: сделать метод
+        }
         sqlite3_stmt *stmt = nullptr;
         const char *sql = UPDATE_ANGLE;
 
