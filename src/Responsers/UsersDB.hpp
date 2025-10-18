@@ -1,17 +1,17 @@
 #pragma once
 
 #include <format>
+#include <fstream>
 #include <memory>
 #include <string_view>
-#include <fstream>
 
 #include <sqlite3.h>
 
 #include <ServiceLocator/ExternLog.hpp>
 
 #include "MathWorker/StringConvert/ComplexStringConverter.hpp"
-#include "SqlCommands.hpp"
 #include "OutputSettings.hpp"
+#include "SqlCommands.hpp"
 
 class UsersDB
 {
@@ -24,14 +24,15 @@ public:
 
     bool createFile(const std::string_view fileName)
     {
-        void(std::ofstream{fileName.data()});//Создание файла
-        if(openFile(fileName))
+        void(std::ofstream{fileName.data()}); // Создание файла
+        if (openFile(fileName))
             return false;
 
-        if(sqlite3_exec(DB_.get(), SQL_GENERATE_TABLE, nullptr, 0, &messageError_))
+        if (sqlite3_exec(DB_.get(), SQL_GENERATE_TABLE, nullptr, 0, &messageError_))
         {
             close();
             externLog::log(messageError_, LogLevel::Error);
+            sqlite3_free(messageError_);
             return false;
         }
         return true;
@@ -40,7 +41,7 @@ public:
     bool openFile(const std::string_view fileName)
     {
         sqlite3 *DB;
-        if(sqlite3_open(fileName.data(), &DB))
+        if (sqlite3_open(fileName.data(), &DB) == SQLITE_OK)
             DB_.reset(DB);
         else
         {
@@ -62,11 +63,11 @@ public:
 
     OutputSettings getUserById(const std::size_t id)
     {
-        if(!id || !isOpen())
+        if (!id || !isOpen())
             return OutputSettings{};
-        sqlite3_stmt* stmt = nullptr;
+        sqlite3_stmt *stmt = nullptr;
 
-        const char* sql = "SELECT * FROM USERS WHERE ID = ?;";
+        const char *sql = "SELECT * FROM USERS WHERE ID = ?;";
 
         if (sqlite3_prepare_v2(DB_.get(), sql, -1, &stmt, nullptr) != SQLITE_OK)
         {
@@ -94,24 +95,124 @@ public:
         return res;
     }
 
-    bool addUserByID(const std::size_t id)
+    
+
+    bool addUserByID(const std::size_t id, const OutputSettings &settings)
     {
-        return false;
+        if (!id || !isOpen())
+            return false;
+
+        sqlite3_stmt *stmt = nullptr;
+
+        if (sqlite3_prepare_v2(DB_.get(), INSERT_USER, -1, &stmt, nullptr) != SQLITE_OK)
+        {
+            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            return false;
+        }
+
+        sqlite3_bind_int64(stmt, 1, static_cast<sqlite3_int64>(id));
+        sqlite3_bind_int(stmt, 2, static_cast<int>(settings.complexType));
+        sqlite3_bind_int(stmt, 3, static_cast<int>(settings.angleType));
+        sqlite3_bind_int(stmt, 4, static_cast<int>(settings.precession));
+
+        const int rc = sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+
+        if (rc != SQLITE_DONE)
+        {
+            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            return false;
+        }
+        return true;
     }
+    bool changeUserPrecession(const std::size_t id, const unsigned char precession)
+    {
+        if (!id || !isOpen())
+            return false;
+        sqlite3_stmt *stmt = nullptr;
 
+        if (sqlite3_prepare_v2(DB_.get(), UPDATE_PRECESSION, -1, &stmt, nullptr) != SQLITE_OK)
+        {
+            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            return false;
+        }
+
+        sqlite3_bind_int(stmt, 1, static_cast<int>(precession));
+        sqlite3_bind_int64(stmt, 2, static_cast<sqlite3_int64>(id));
+
+        const int rc = sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+
+        if (rc != SQLITE_DONE)
+        {
+            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            return false;
+        }
+        return true;
+    }
+    bool changeUserNumberType(const std::size_t id, const mathWorker::ComplexOutputType type)
+    {
+        if (!id || !isOpen())
+            return false;
+        sqlite3_stmt *stmt = nullptr;
+
+        if (sqlite3_prepare_v2(DB_.get(), UPDATE_NUMBER, -1, &stmt, nullptr) != SQLITE_OK)
+        {
+            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            return false;
+        }
+
+        sqlite3_bind_int(stmt, 1, static_cast<int>(type));
+        sqlite3_bind_int64(stmt, 2, static_cast<sqlite3_int64>(id));
+
+        const int rc = sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+
+        if (rc != SQLITE_DONE)
+        {
+            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            return false;
+        }
+        return true;
+    }
+    bool changeUserAngleType(const std::size_t id, const mathWorker::AngleOutputType type)
+    {
+        if (!id || !isOpen())
+            return false;
+        // TODO: сделать метод
+        sqlite3_stmt *stmt = nullptr;
+        const char *sql = UPDATE_ANGLE;
+
+        if (sqlite3_prepare_v2(DB_.get(), sql, -1, &stmt, nullptr) != SQLITE_OK)
+        {
+            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            return false;
+        }
+
+        sqlite3_bind_int(stmt, 1, static_cast<int>(type));
+        sqlite3_bind_int64(stmt, 2, static_cast<sqlite3_int64>(id));
+
+        const int rc = sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+
+        if (rc != SQLITE_DONE)
+        {
+            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            return false;
+        }
+        return true;
+    }
+    
 private:
-
     struct SqlDataBaseDestroyer
     {
-        void operator()(sqlite3* db)
+        void operator()(sqlite3 *db)
         {
             sqlite3_close(db);
         }
     };
 
 private:
-
     std::unique_ptr<sqlite3, SqlDataBaseDestroyer> DB_;
-    char* messageError_;
-
+    char *messageError_;
 };
