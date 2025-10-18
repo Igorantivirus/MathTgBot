@@ -1,0 +1,7 @@
+build/
+.vscode/
+
+.clangd
+.clang-format
+
+CMakePresets.json
