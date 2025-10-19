@@ -5,6 +5,7 @@ include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 set(EXECUTABLE_NAME ${PROJECT_NAME})
 set(THIRD_PARTY_BUILD_DIR "${CMAKE_BINARY_DIR}/_3rdparty")
 
@@ -60,13 +61,11 @@ target_include_directories(${EXECUTABLE_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/src/
 )
 
-include_directories(${SQLITE3_INCLUDE_DIRS})
-target_link_libraries (${EXECUTABLE_NAME} ${SQLITE3_LIBRARIES})
-
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE 
     pugixml::pugixml
     MathWorker::MathWorker
     CURL::libcurl
+    SQLite::SQLite3
 )
 
 #TgBot
