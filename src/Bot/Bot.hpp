@@ -1,13 +1,13 @@
 #pragma once
 
-#include <utility>
-
 #include <tgbot/tgbot.h>
 
 #include <ServiceLocator/GeneralLocator.hpp>
 #include <ServiceLocator/ExternLog.hpp>
-
 #include <Responsers/Responser.hpp>
+
+#include "OutpuSettingsToString.hpp"
+#include "MessageButtonsGenerate.hpp"
 
 class Bot
 {
@@ -17,7 +17,8 @@ public:
         bot_.getEvents().onNonCommandMessage(   std::bind(&Bot::onNonCommandMessage,    this, std::placeholders::_1));
         bot_.getEvents().onInlineQuery(         std::bind(&Bot::onInlineQuery,          this, std::placeholders::_1));
 
-        bot_.getEvents().onCommand("start",     std::bind(&Bot::start,     this, std::placeholders::_1));
+        bot_.getEvents().onCommand("start",         std::bind(&Bot::start,          this, std::placeholders::_1));
+        bot_.getEvents().onCommand("printSettings", std::bind(&Bot::printSettings,  this, std::placeholders::_1));
     }
 
     void run()
@@ -49,6 +50,7 @@ private:
 
     TgBot::Bot bot_;
     Responser responser_;
+    MessageButtonsGenerate generator_;
 
 private:
 
@@ -82,5 +84,14 @@ private:
     void start(TgBot::Message::Ptr message)
     {
         responser_.start(message->chat->id);
+    }
+
+    void printSettings(TgBot::Message::Ptr message)
+    {
+        auto sets = responser_.printSettings(message->chat->id);
+        std::string setsStr = Convert::toString(sets);
+        
+        auto kb = generator_.makeSettingsKb(sets);
+        bot_.getApi().sendMessage(message->chat->id, setsStr, false, 0, kb);
     }
 };

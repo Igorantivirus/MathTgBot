@@ -8,6 +8,7 @@
 #include <MathWorker/MathWorker.hpp>
 
 #include <StringUtility.hpp>
+#include "Responsers/OutputSettings.hpp"
 #include "UsersDB.hpp"
 
 class Responser
@@ -15,7 +16,7 @@ class Responser
 public:
     Responser()
     {
-        db_.createFile("file.db");
+        db_.openFile("file.db");
     }
 
     void start(const std::int64_t id)
@@ -35,6 +36,11 @@ public:
         std::string label = process(params, converter);
         std::string text = message + label;
         return std::make_pair(label, text);
+    }
+
+    OutputSettings printSettings(const std::int64_t id)
+    {
+        return db_.getUserById(id);
     }
 
 private:
