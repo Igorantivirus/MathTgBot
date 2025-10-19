@@ -2,10 +2,14 @@
 
 #include "GeneralLocator.hpp"
 
-namespace externLog
+namespace service
 {
     static void log(const std::string& message, LogLevel level)
     {
         Services::instance().log->log(message, level);
+    }
+    static ResponseConfig config(const std::string& key)
+    {
+        return *Services::instance().config;
     }
 }
