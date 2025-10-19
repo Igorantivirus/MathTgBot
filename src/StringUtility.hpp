@@ -6,7 +6,7 @@
 namespace StringUtility
 {
     
-    std::vector<std::string_view> split(const std::string& s, const char* c)
+    static std::vector<std::string_view> split(const std::string& s, const char* c)
     {
         const std::size_t cSize = std::strlen(c);
         std::vector<std::string_view> res;
@@ -23,7 +23,7 @@ namespace StringUtility
             res.push_back(std::string_view(s.c_str() + last, s.size() - last));
         return res;
     }
-    std::vector<std::string_view> split(const std::string& s, const char c)
+    static std::vector<std::string_view> split(const std::string& s, const char c)
     {
         std::vector<std::string_view> res;
         std::size_t last = 0;
@@ -40,7 +40,7 @@ namespace StringUtility
         return res;
     }
 
-    void toLower(std::string& str)
+    static void toLower(std::string& str)
 	{
 		int pr = 0;
 		for (size_t i = 0; i < str.size(); ++i)
@@ -69,7 +69,7 @@ namespace StringUtility
 		}
 	}
 
-    void replaceAll(std::string &str, const char *oldS, const char *newS)
+    static void replaceAll(std::string &str, const char *oldS, const char *newS)
     {
         const std::size_t s1 = std::strlen(oldS);
         const std::size_t s2 = std::strlen(newS);
@@ -81,7 +81,7 @@ namespace StringUtility
             last = ind + s2;
         }
     }
-    void replaceAll(std::string &str, const char *oldS, const char newS, const std::size_t count = 1)
+    static void replaceAll(std::string &str, const char *oldS, const char newS, const std::size_t count = 1)
     {
         const std::size_t s1 = std::strlen(oldS);
         std::size_t ind;
@@ -92,7 +92,7 @@ namespace StringUtility
             last = ind + 1;
         }
     }
-    void replaceAll(std::string &str, const char oldS, const char newS)
+    static void replaceAll(std::string &str, const char oldS, const char newS)
     {
         for (auto &i : str)
             if (i == oldS)
