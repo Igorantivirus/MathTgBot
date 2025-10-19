@@ -25,7 +25,7 @@ public:
     bool createFile(const std::string_view fileName)
     {
         void(std::ofstream{fileName.data()}); // Создание файла
-        if (openFile(fileName))
+        if (!openFile(fileName))
             return false;
 
         if (sqlite3_exec(DB_.get(), SQL_GENERATE_TABLE, nullptr, 0, &messageError_))
@@ -93,7 +93,7 @@ public:
             res.precession = static_cast<unsigned char>(prec);
         }
         else
-            externLog::log(std::format("No user with ID = {}", id), LogLevel::Error);
+            externLog::log(std::format("No user with ID = {}", id), LogLevel::Warning);
         sqlite3_finalize(stmt);
         return res;
     }

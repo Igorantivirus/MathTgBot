@@ -1,10 +1,13 @@
 #pragma once
 
+#include <utility>
+
 #include <tgbot/tgbot.h>
 
 #include <ServiceLocator/GeneralLocator.hpp>
 #include <ServiceLocator/ExternLog.hpp>
-#include <utility>
+
+#include <Responsers/Responser.hpp>
 
 class Bot
 {
@@ -45,28 +48,29 @@ public:
 private:
 
     TgBot::Bot bot_;
+    Responser responser_;
 
 private:
 
     void onNonCommandMessage(TgBot::Message::Ptr message)
     {
-
+        bot_.getApi().sendMessage(message->chat->id, "я в тесте!");
     }
 
     void onInlineQuery(const TgBot::InlineQuery::Ptr& query)
     {
-        auto res = std::make_pair<std::string, bool>("", true);
-        if (res.first.empty())
+        auto [label, text] = responser_.onInlineMessage(query->query, query->from->id);
+        if (label.empty())
             return;
 
         std::vector<TgBot::InlineQueryResult::Ptr> results;
         TgBot::InlineQueryResultArticle::Ptr article = std::make_shared<TgBot::InlineQueryResultArticle>();
 
-        article->title = res.second ? "Result." : "Error";
+        article->title = label;
         article->id = "1";
 
         TgBot::InputTextMessageContent::Ptr messageContent = std::make_shared<TgBot::InputTextMessageContent>();
-        messageContent->messageText = res.first;
+        messageContent->messageText = text;
         article->inputMessageContent = messageContent;
 
         results.push_back(article);
@@ -75,8 +79,8 @@ private:
 
 private:
 
-    void start(TgBot::Message::Ptr message) const
+    void start(TgBot::Message::Ptr message)
     {
-
+        responser_.start(message->chat->id);
     }
 };
