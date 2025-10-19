@@ -20,6 +20,15 @@ find_package(pugixml CONFIG REQUIRED)
 find_package(CURL REQUIRED)
 find_package(SQLite3 REQUIRED)
 
+#nlohmann_json
+if(WIN32)
+    find_package(nlohmann_json 3.12.0 REQUIRED)
+    add_library(nlohmann_json INTERFACE IMPORTED)
+else()
+    find_package(nlohmann_json REQUIRED)
+endif()
+#end nlohmann_json
+
 #TgBot
 if(WIN32)
 
@@ -66,17 +75,14 @@ target_link_libraries(${EXECUTABLE_NAME} PRIVATE
     MathWorker::MathWorker
     CURL::libcurl
     SQLite::SQLite3
+    nlohmann_json::nlohmann_json
 )
 
 #TgBot
 if(WIN32)
-    
     target_link_libraries(${EXECUTABLE_NAME} PRIVATE TgBot::TgBot)
-
 else()
-
     target_link_libraries(${EXECUTABLE_NAME} PRIVATE /usr/local/lib/libTgBot.a ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES})
-
 endif()
 
 if (MSVC)
