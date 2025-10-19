@@ -1,4 +1,6 @@
-#include <tgbot/tgbot.h>
+#include <BotApiKey.hpp>
+
+#include <Bot/Bot.hpp>
 
 #if defined(_WIN32) || defined(_WIN64)
 const std::string TgBot::InlineQueryResultArticle::TYPE = "article";
@@ -11,10 +13,10 @@ int main()
     std::system("chcp 65001 > nul");
 #endif
 
-    // Services::instance().log.reset(new Logger{"log.log", true});
+    Services::instance().log.reset(new Logger{"log.log", true});
 
-    // Bot bot(TG_API_KEY);
-    // bot.run();
+    Bot bot(TG_BOT_API_KEY);
+    bot.run();
 
     return 0;
 }
