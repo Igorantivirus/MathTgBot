@@ -7,7 +7,7 @@
 
 #include <sqlite3.h>
 
-#include <ServiceLocator/ExternLog.hpp>
+#include <ServiceLocator/ExternService.hpp>
 
 #include "MathWorker/StringConvert/ComplexStringConverter.hpp"
 #include "OutputSettings.hpp"
@@ -31,7 +31,7 @@ public:
         if (sqlite3_exec(DB_.get(), SQL_GENERATE_TABLE, nullptr, 0, &messageError_))
         {
             close();
-            externLog::log(messageError_, LogLevel::Error);
+            service::log(messageError_, LogLevel::Error);
             sqlite3_free(messageError_);
             return false;
         }
@@ -46,7 +46,7 @@ public:
         else
         {
             close();
-            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            service::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
         }
         return static_cast<bool>(DB_.get());
     }
@@ -65,7 +65,7 @@ public:
     {
         if (!id || !isOpen())
         {
-            externLog::log("Trying to work with an empty file or empty id (getUserById).", LogLevel::Error);
+            service::log("Trying to work with an empty file or empty id (getUserById).", LogLevel::Error);
             return {};
         }
         sqlite3_stmt *stmt = nullptr;
@@ -74,7 +74,7 @@ public:
 
         if (sqlite3_prepare_v2(DB_.get(), sql, -1, &stmt, nullptr) != SQLITE_OK)
         {
-            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            service::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return {};
         }
         sqlite3_bind_int64(stmt, 1, static_cast<sqlite3_int64>(id));
@@ -91,7 +91,7 @@ public:
             res.precession = static_cast<unsigned char>(prec);
         }
         else
-            externLog::log(std::format("No user with ID = {}", id), LogLevel::Warning);
+            service::log(std::format("No user with ID = {}", id), LogLevel::Warning);
         sqlite3_finalize(stmt);
         return res;
     }
@@ -100,7 +100,7 @@ public:
     {
         if (!id || !isOpen())
         {
-            externLog::log("Trying to work with an empty file or empty id (addUserByID).", LogLevel::Error);
+            service::log("Trying to work with an empty file or empty id (addUserByID).", LogLevel::Error);
             return false;
         }
 
@@ -108,7 +108,7 @@ public:
 
         if (sqlite3_prepare_v2(DB_.get(), INSERT_USER, -1, &stmt, nullptr) != SQLITE_OK)
         {
-            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            service::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return false;
         }
 
@@ -122,7 +122,7 @@ public:
 
         if (rc != SQLITE_DONE)
         {
-            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            service::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return false;
         }
         return true;
@@ -131,14 +131,14 @@ public:
     {
         if (!id || !isOpen())
         {
-            externLog::log("Trying to work with an empty file or empty id (changeUserPrecession).", LogLevel::Error);
+            service::log("Trying to work with an empty file or empty id (changeUserPrecession).", LogLevel::Error);
             return false;
         }
         sqlite3_stmt *stmt = nullptr;
 
         if (sqlite3_prepare_v2(DB_.get(), UPDATE_PRECESSION, -1, &stmt, nullptr) != SQLITE_OK)
         {
-            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            service::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return false;
         }
 
@@ -152,7 +152,7 @@ public:
 
         if (rc != SQLITE_DONE)
         {
-            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            service::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return false;
         }
         return changed;
@@ -161,7 +161,7 @@ public:
     {
         if (!id || !isOpen())
         {
-            externLog::log("Trying to work with an empty file or empty id (addToPrecession).", LogLevel::Error);
+            service::log("Trying to work with an empty file or empty id (addToPrecession).", LogLevel::Error);
             return false;
         }
 
@@ -170,7 +170,7 @@ public:
 
         if (sqlite3_prepare_v2(DB_.get(), sql, -1, &stmt, nullptr) != SQLITE_OK)
         {
-            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            service::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return false;
         }
 
@@ -182,7 +182,7 @@ public:
 
         if (rc != SQLITE_DONE)
         {
-            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            service::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return false;
         }
         return true;
@@ -191,14 +191,14 @@ public:
     {
         if (!id || !isOpen())
         {
-            externLog::log("Trying to work with an empty file or empty id (changeUserNumberType).", LogLevel::Error);
+            service::log("Trying to work with an empty file or empty id (changeUserNumberType).", LogLevel::Error);
             return false;
         }
         sqlite3_stmt *stmt = nullptr;
 
         if (sqlite3_prepare_v2(DB_.get(), UPDATE_NUMBER, -1, &stmt, nullptr) != SQLITE_OK)
         {
-            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            service::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return false;
         }
 
@@ -212,7 +212,7 @@ public:
 
         if (rc != SQLITE_DONE)
         {
-            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            service::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return false;
         }
         return changed;
@@ -221,7 +221,7 @@ public:
     {
         if (!id || !isOpen())
         {
-            externLog::log("Trying to work with an empty file or empty id (changeUserAngleType).", LogLevel::Error);
+            service::log("Trying to work with an empty file or empty id (changeUserAngleType).", LogLevel::Error);
             return false;
         }
         sqlite3_stmt *stmt = nullptr;
@@ -229,7 +229,7 @@ public:
 
         if (sqlite3_prepare_v2(DB_.get(), sql, -1, &stmt, nullptr) != SQLITE_OK)
         {
-            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            service::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return false;
         }
 
@@ -243,7 +243,7 @@ public:
 
         if (rc != SQLITE_DONE)
         {
-            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            service::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return false;
         }
         return changed;

@@ -3,7 +3,7 @@
 #include <tgbot/tgbot.h>
 
 #include <ServiceLocator/GeneralLocator.hpp>
-#include <ServiceLocator/ExternLog.hpp>
+#include <ServiceLocator/ExternService.hpp>
 #include <Responsers/Responser.hpp>
 #include <tgbot/types/CallbackQuery.h>
 
@@ -19,14 +19,14 @@ public:
         bot_.getEvents().onInlineQuery(      std::bind(&Bot::onInlineQuery,       this, std::placeholders::_1));
         bot_.getEvents().onCallbackQuery(    std::bind(&Bot::onCallbackQuery,     this, std::placeholders::_1));
 
-        bot_.getEvents().onCommand("start",         std::bind(&Bot::start,          this, std::placeholders::_1));
-        bot_.getEvents().onCommand("printSettings", std::bind(&Bot::printSettings,  this, std::placeholders::_1));
+        bot_.getEvents().onCommand("start",         std::bind(&Bot::start,    this, std::placeholders::_1));
+        bot_.getEvents().onCommand("settings",      std::bind(&Bot::settings, this, std::placeholders::_1));
     }
 
     void run()
     {
         TgBot::TgLongPoll longPoll(bot_);
-        externLog::log("Bot running", LogLevel::Info);
+        service::log("Bot running", LogLevel::Info);
         while (true)
         {
             try
@@ -101,7 +101,7 @@ private:
         responser_.start(message->chat->id);
     }
 
-    void printSettings(TgBot::Message::Ptr message)
+    void settings(TgBot::Message::Ptr message)
     {
         auto sets = responser_.printSettings(message->chat->id);
         std::string setsStr = Convert::toString(sets);

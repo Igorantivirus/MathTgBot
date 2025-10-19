@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "Logger.hpp"
+#include "ResponseConfig.hpp"
 
 class Services
 {
@@ -17,6 +18,7 @@ public:
     }
 
     std::shared_ptr<Logger> log;
+    std::shared_ptr<ResponseConfig> config;
 
 private:
 
