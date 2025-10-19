@@ -1,37 +1,57 @@
 #pragma once
 
+#include <string>
+#include <string_view>
 #include <tgbot/tgbot.h>
 
 #include <MathWorker/StringConvert/ComplexStringConverter.hpp>
 
 #include <Responsers/OutputSettings.hpp>
+#include <unordered_map>
 
 class MessageButtonsGenerate
 {
 public:
     TgBot::InlineKeyboardMarkup::Ptr makeSettingsKb(const OutputSettings &s)
     {
-        auto kb = std::make_shared<TgBot::InlineKeyboardMarkup>();
+        static TgBot::InlineKeyboardMarkup::Ptr kb;
+        if(!kb)
+        {
+            kb = std::make_shared<TgBot::InlineKeyboardMarkup>();
+            kb->inlineKeyboard.push_back(generateButtons({
+                {"Радианы", "set:angle:0"},
+                {"Градусы", "set:angle:1"}
+            }));
+            
+            kb->inlineKeyboard.push_back(generateButtons({
+                {"Алгебр", "set:numt:0"},
+                {"Триган", "set:numt:1"},
+                {"Степен", "set:numt:2"},
+                {"Полярн", "set:numt:3"}
+            }));
 
-        kb->inlineKeyboard.push_back(generateDegreeSettingsButtons());
+            kb->inlineKeyboard.push_back(generateButtons({
+                {"Знаки: +1", "add:prec:1"},
+                {"Знаки: -1", "add:prec:-1"}
+            }));
+        }
+
         return kb;
     }
 
 private:
-    std::vector<TgBot::InlineKeyboardButton::Ptr> generateDegreeSettingsButtons()
+    static TgBot::InlineKeyboardButton::Ptr getBytton(const std::string_view text, const std::string_view callback)
+    {
+        auto res = std::make_shared<TgBot::InlineKeyboardButton>();
+        res->text = text;
+        res->callbackData = callback;
+        return res;
+    }
+    static std::vector<TgBot::InlineKeyboardButton::Ptr> generateButtons(const std::unordered_map<std::string, std::string> &map)
     {
         std::vector<TgBot::InlineKeyboardButton::Ptr> row;
-
-        auto toRad = std::make_shared<TgBot::InlineKeyboardButton>();
-        toRad->text = "Выводить радианы";
-        toRad->callbackData = "set:angle:0";
-
-        auto toDeg = std::make_shared<TgBot::InlineKeyboardButton>();
-        toDeg->text = "Выводить градусы";
-        toDeg->callbackData = "set:angle:1";
-
-        row.push_back(toRad);
-        row.push_back(toDeg);
+        for (auto &[a, b] : map)
+            row.push_back(getBytton(a, b));
         return row;
     }
 };
