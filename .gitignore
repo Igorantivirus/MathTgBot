@@ -1,7 +1,10 @@
 build/
 .vscode/
+cwd/
 
 .clangd
 .clang-format
 
 CMakePresets.json
+
+src/BotApiKey.hpp
