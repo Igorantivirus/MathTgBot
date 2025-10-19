@@ -24,6 +24,8 @@ struct ResponseConfig
     static ResponseConfig load(const std::string &config_path)
     {
         std::ifstream config_file(config_path);
+        if (!config_file.is_open())
+            throw std::runtime_error("Cannot open config file: " + config_path);
         nlohmann::json config = nlohmann::json::parse(config_file);
         return config.template get<ResponseConfig>();
     }
