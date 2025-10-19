@@ -144,8 +144,10 @@ public:
 
         sqlite3_bind_int(stmt, 1, static_cast<int>(precession));
         sqlite3_bind_int64(stmt, 2, static_cast<sqlite3_int64>(id));
+        sqlite3_bind_int(stmt, 3, static_cast<int>(precession));
 
         const int rc = sqlite3_step(stmt);
+        const bool changed = (rc == SQLITE_DONE) && sqlite3_changes(DB_.get()) > 0;
         sqlite3_finalize(stmt);
 
         if (rc != SQLITE_DONE)
@@ -153,7 +155,7 @@ public:
             externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return false;
         }
-        return true;
+        return changed;
     }
     bool addToPrecession(const std::size_t id, const unsigned char add)
     {
@@ -202,8 +204,10 @@ public:
 
         sqlite3_bind_int(stmt, 1, static_cast<int>(type));
         sqlite3_bind_int64(stmt, 2, static_cast<sqlite3_int64>(id));
+        sqlite3_bind_int(stmt, 3, static_cast<int>(type));
 
         const int rc = sqlite3_step(stmt);
+        const bool changed = (rc == SQLITE_DONE) && sqlite3_changes(DB_.get()) > 0;
         sqlite3_finalize(stmt);
 
         if (rc != SQLITE_DONE)
@@ -211,7 +215,7 @@ public:
             externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return false;
         }
-        return true;
+        return changed;
     }
     bool changeUserAngleType(const std::size_t id, const mathWorker::AngleOutputType type)
     {
@@ -231,8 +235,10 @@ public:
 
         sqlite3_bind_int(stmt, 1, static_cast<int>(type));
         sqlite3_bind_int64(stmt, 2, static_cast<sqlite3_int64>(id));
+        sqlite3_bind_int(stmt, 3, static_cast<int>(type));
 
         const int rc = sqlite3_step(stmt);
+        const bool changed = (rc == SQLITE_DONE) && sqlite3_changes(DB_.get()) > 0;
         sqlite3_finalize(stmt);
 
         if (rc != SQLITE_DONE)
@@ -240,7 +246,7 @@ public:
             externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return false;
         }
-        return true;
+        return changed;
     }
     
 private:

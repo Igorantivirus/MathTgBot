@@ -58,7 +58,8 @@ private:
 
     void onNonCommandMessage(TgBot::Message::Ptr message)
     {
-        bot_.getApi().sendMessage(message->chat->id, "я в тесте!");
+        std::string res = responser_.onMessage(message->text, message->from->id);
+        bot_.getApi().sendMessage(message->chat->id, res);
     }
 
     void onInlineQuery(const TgBot::InlineQuery::Ptr& query)

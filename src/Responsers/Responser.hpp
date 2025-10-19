@@ -32,11 +32,28 @@ public:
             return std::make_pair<std::string, std::string>("", "");
 
         auto params = StringUtility::split(message, '\n');
+        params.back().remove_suffix(1);
         mathWorker::ComplexStringConverter converter;
         
         std::string label = process(params, converter);
         std::string text = message + label;
         return std::make_pair(label, text);
+    }
+
+    std::string onMessage(const std::string& message, const std::int64_t id)
+    {
+        if(message.empty())
+            return "Empty input!";
+
+        auto params = StringUtility::split(message, '\n');
+        
+        auto sets = db_.getUserById(id);
+        mathWorker::ComplexStringConverter converter;
+        converter.complexType = sets.complexType;
+        converter.angleType = sets.angleType;
+        converter.precession = sets.precession;
+        
+        return process(params, converter);
     }
 
     OutputSettings printSettings(const std::int64_t id)
@@ -62,7 +79,6 @@ private:
         {
             const std::span<const std::string_view> spn{params.begin(), params.end() - 1};
             std::string_view stringToParse = params.back();
-            stringToParse.remove_suffix(1);
             return clearProcessMath(stringToParse, spn, converter);
         }
         catch (const mathWorker::ParseException &e)
