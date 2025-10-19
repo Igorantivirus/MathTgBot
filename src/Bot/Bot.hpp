@@ -5,6 +5,7 @@
 #include <ServiceLocator/GeneralLocator.hpp>
 #include <ServiceLocator/ExternLog.hpp>
 #include <Responsers/Responser.hpp>
+#include <tgbot/types/CallbackQuery.h>
 
 #include "OutpuSettingsToString.hpp"
 #include "MessageButtonsGenerate.hpp"
@@ -14,8 +15,9 @@ class Bot
 public:
     Bot(const char *key) : bot_(key)
     {
-        bot_.getEvents().onNonCommandMessage(   std::bind(&Bot::onNonCommandMessage,    this, std::placeholders::_1));
-        bot_.getEvents().onInlineQuery(         std::bind(&Bot::onInlineQuery,          this, std::placeholders::_1));
+        bot_.getEvents().onNonCommandMessage(std::bind(&Bot::onNonCommandMessage, this, std::placeholders::_1));
+        bot_.getEvents().onInlineQuery(      std::bind(&Bot::onInlineQuery,       this, std::placeholders::_1));
+        bot_.getEvents().onCallbackQuery(    std::bind(&Bot::onCallbackQuery,     this, std::placeholders::_1));
 
         bot_.getEvents().onCommand("start",         std::bind(&Bot::start,          this, std::placeholders::_1));
         bot_.getEvents().onCommand("printSettings", std::bind(&Bot::printSettings,  this, std::placeholders::_1));
@@ -77,6 +79,12 @@ private:
 
         results.push_back(article);
         bot_.getApi().answerInlineQuery(query->id, results);
+    }
+
+    void onCallbackQuery(const TgBot::CallbackQuery::Ptr& query)
+    {
+        
+        std::cout << "Пришло: " << query->data << '\n';
     }
 
 private:
