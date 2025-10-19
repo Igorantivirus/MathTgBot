@@ -83,8 +83,14 @@ private:
 
     void onCallbackQuery(const TgBot::CallbackQuery::Ptr& query)
     {
-        
-        std::cout << "Пришло: " << query->data << '\n';
+        if(!responser_.processQuery(query->data, query->from->id))
+            return;
+
+        auto sets = responser_.printSettings(query->from->id);
+        std::string setsStr = Convert::toString(sets);
+        auto kb = generator_.makeSettingsKb();
+
+        bot_.getApi().editMessageText(setsStr, query->message->chat->id, query->message->messageId, "", "", false, kb);
     }
 
 private:
@@ -99,7 +105,7 @@ private:
         auto sets = responser_.printSettings(message->chat->id);
         std::string setsStr = Convert::toString(sets);
         
-        auto kb = generator_.makeSettingsKb(sets);
+        auto kb = generator_.makeSettingsKb();
         bot_.getApi().sendMessage(message->chat->id, setsStr, false, 0, kb);
     }
 };

@@ -10,6 +10,7 @@
 #include <StringUtility.hpp>
 #include "Responsers/OutputSettings.hpp"
 #include "UsersDB.hpp"
+#include "BDQueryTaskParse.hpp"
 
 class Responser
 {
@@ -43,9 +44,15 @@ public:
         return db_.getUserById(id);
     }
 
+    bool processQuery(const std::string& str, const std::int64_t id)
+    {
+        return tasker_.processTask(str, id, db_);
+    }
+
 private:
 
     UsersDB db_;
+    BDQueryTaskParse tasker_;
 
 private:
 

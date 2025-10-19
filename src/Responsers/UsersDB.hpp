@@ -24,7 +24,7 @@ public:
 
     bool createFile(const std::string_view fileName)
     {
-        void(std::ofstream{fileName.data()}); // Создание файла
+        void(std::ofstream{fileName.data()});
         if (!openFile(fileName))
             return false;
 
@@ -65,7 +65,7 @@ public:
     {
         if (!id || !isOpen())
         {
-            externLog::log("Trying to work with an empty file or empty id (getUserById).", LogLevel::Error);   
+            externLog::log("Trying to work with an empty file or empty id (getUserById).", LogLevel::Error);
             return {};
         }
         sqlite3_stmt *stmt = nullptr;
@@ -77,10 +77,8 @@ public:
             externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
             return {};
         }
-        // Привязываем параметр (подставляем значение вместо '?')
-        sqlite3_bind_int64(stmt, 1, id);
+        sqlite3_bind_int64(stmt, 1, static_cast<sqlite3_int64>(id));
         OutputSettings res;
-        // Выполняем запрос
         if (sqlite3_step(stmt) == SQLITE_ROW)
         {
             int userId = sqlite3_column_int(stmt, 0);
@@ -102,7 +100,7 @@ public:
     {
         if (!id || !isOpen())
         {
-            externLog::log("Trying to work with an empty file or empty id (addUserByID).", LogLevel::Error);   
+            externLog::log("Trying to work with an empty file or empty id (addUserByID).", LogLevel::Error);
             return false;
         }
 
@@ -133,7 +131,7 @@ public:
     {
         if (!id || !isOpen())
         {
-            externLog::log("Trying to work with an empty file or empty id (changeUserPrecession).", LogLevel::Error);   
+            externLog::log("Trying to work with an empty file or empty id (changeUserPrecession).", LogLevel::Error);
             return false;
         }
         sqlite3_stmt *stmt = nullptr;
@@ -157,11 +155,41 @@ public:
         }
         return true;
     }
+    bool addToPrecession(const std::size_t id, const unsigned char add)
+    {
+        if (!id || !isOpen())
+        {
+            externLog::log("Trying to work with an empty file or empty id (addToPrecession).", LogLevel::Error);
+            return false;
+        }
+
+        sqlite3_stmt *stmt = nullptr;
+        const char *sql = "UPDATE USERS SET PRECESSION = PRECESSION + ? WHERE ID = ?;";
+
+        if (sqlite3_prepare_v2(DB_.get(), sql, -1, &stmt, nullptr) != SQLITE_OK)
+        {
+            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            return false;
+        }
+
+        sqlite3_bind_int(stmt, 1, static_cast<int>(add));
+        sqlite3_bind_int64(stmt, 2, static_cast<sqlite3_int64>(id));
+
+        const int rc = sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+
+        if (rc != SQLITE_DONE)
+        {
+            externLog::log(sqlite3_errmsg(DB_.get()), LogLevel::Error);
+            return false;
+        }
+        return true;
+    }
     bool changeUserNumberType(const std::size_t id, const mathWorker::ComplexOutputType type)
     {
         if (!id || !isOpen())
         {
-            externLog::log("Trying to work with an empty file or empty id (changeUserNumberType).", LogLevel::Error);   
+            externLog::log("Trying to work with an empty file or empty id (changeUserNumberType).", LogLevel::Error);
             return false;
         }
         sqlite3_stmt *stmt = nullptr;
@@ -189,7 +217,7 @@ public:
     {
         if (!id || !isOpen())
         {
-            externLog::log("Trying to work with an empty file or empty id (changeUserAngleType).", LogLevel::Error);   
+            externLog::log("Trying to work with an empty file or empty id (changeUserAngleType).", LogLevel::Error);
             return false;
         }
         sqlite3_stmt *stmt = nullptr;

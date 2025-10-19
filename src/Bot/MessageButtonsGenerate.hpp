@@ -2,17 +2,16 @@
 
 #include <string>
 #include <string_view>
+#include <unordered_map>
+
 #include <tgbot/tgbot.h>
 
 #include <MathWorker/StringConvert/ComplexStringConverter.hpp>
 
-#include <Responsers/OutputSettings.hpp>
-#include <unordered_map>
-
 class MessageButtonsGenerate
 {
 public:
-    TgBot::InlineKeyboardMarkup::Ptr makeSettingsKb(const OutputSettings &s)
+    TgBot::InlineKeyboardMarkup::Ptr makeSettingsKb()
     {
         static TgBot::InlineKeyboardMarkup::Ptr kb;
         if(!kb)
