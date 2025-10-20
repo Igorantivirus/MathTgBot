@@ -16,10 +16,12 @@ struct ResponseConfig
     std::string algebraic;
     std::string trigonometric;
     std::string indicative;
+    std::string precessionAdd;
+    std::string precessionBack;
     std::string polar;
     std::string settings;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(ResponseConfig, start, help, mathinfo, degr, rads, algebraic, trigonometric, indicative, polar, settings)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(ResponseConfig, start, help, mathinfo, degr, rads, algebraic, trigonometric, indicative, precessionAdd, precessionBack, polar, settings)
 
     static ResponseConfig load(const std::string &config_path)
     {
