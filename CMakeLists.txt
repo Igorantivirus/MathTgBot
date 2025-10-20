@@ -17,7 +17,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(MathWorker)
 
 find_package(pugixml CONFIG REQUIRED)
-find_package(CURL REQUIRED)
 find_package(SQLite3 REQUIRED)
 
 #nlohmann_json
@@ -53,11 +52,6 @@ else()
     find_package(OpenSSL REQUIRED)
     find_package(Boost COMPONENTS system filesystem REQUIRED)
     include_directories(/usr/local/include ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
-    if (CURL_FOUND)
-        include_directories(${CURL_INCLUDE_DIRS})
-        add_definitions(-DHAVE_CURL)
-    endif()
-
 
 endif()
 #end TgBot
@@ -73,7 +67,6 @@ target_include_directories(${EXECUTABLE_NAME} PRIVATE
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE 
     pugixml::pugixml
     MathWorker::MathWorker
-    CURL::libcurl
     SQLite::SQLite3
     nlohmann_json::nlohmann_json
 )
