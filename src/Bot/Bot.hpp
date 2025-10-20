@@ -13,7 +13,7 @@
 class Bot
 {
 public:
-    Bot(const char *key) : bot_(key)
+    Bot(const std::string& key) : bot_(key)
     {
         bot_.getEvents().onNonCommandMessage(std::bind(&Bot::onNonCommandMessage, this, std::placeholders::_1));
         bot_.getEvents().onInlineQuery(      std::bind(&Bot::onInlineQuery,       this, std::placeholders::_1));
@@ -109,7 +109,7 @@ private:
     void start(TgBot::Message::Ptr message)
     {
         responser_.start(message->chat->id);
-        sendMessage(message->chat->id, service::config().start);
+        sendMessage(message->chat->id, service::responses().start);
     }
     void settings(TgBot::Message::Ptr message)
     {
@@ -121,10 +121,10 @@ private:
     }
     void help(TgBot::Message::Ptr message)
     {
-        sendMessage(message->chat->id, service::config().help);
+        sendMessage(message->chat->id, service::responses().help);
     }
     void mathinfo(TgBot::Message::Ptr message)
     {
-        sendMessage(message->chat->id, service::config().mathinfo);
+        sendMessage(message->chat->id, service::responses().mathinfo);
     }
 };
