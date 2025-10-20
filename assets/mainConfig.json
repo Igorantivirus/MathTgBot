@@ -1,0 +1,7 @@
+{
+    "tgApiKey": "",
+    "responseConfig": "../assets/responseConfig.json",
+    "dataBaseFile": "file.sqlite",
+    "logFile": "log.log",
+    "prinToConsole": true
+}
