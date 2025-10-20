@@ -2,6 +2,11 @@
 
 [![Русская версия](https://img.shields.io/badge/Русская%20версия-blue)](README_RU.md)
 
+<h3>Live Bot</h3>
+
+- Link: https://t.me/GadalkaMathBot
+- Username: @GadalkaMathBot
+
 <h2>Overview</h2>
 
 A Telegram bot written in C++ that evaluates mathematical expressions, including inline mode.

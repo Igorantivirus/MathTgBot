@@ -2,6 +2,11 @@
 
 [![English version](https://img.shields.io/badge/English%20version-blue)](README.md)
 
+<h3>Рабочая версия</h3>
+
+- Ссылка: https://t.me/GadalkaMathBot
+- Username: @GadalkaMathBot
+
 <h2>Обзор</h2>
 
 Телеграм-бот на C++, выполняющий вычисление математических выражений, в том числе в inline-режиме.
