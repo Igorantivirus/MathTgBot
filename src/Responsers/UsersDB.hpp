@@ -1,6 +1,6 @@
 #pragma once
 
-#include <format>
+// #include <format>
 #include <fstream>
 #include <memory>
 #include <string_view>
@@ -91,7 +91,7 @@ public:
             res.precession = static_cast<unsigned char>(prec);
         }
         else
-            service::log(std::format("No user with ID = {}", id), LogLevel::Warning);
+            service::log(std::string("No user with ID = {}") + std::to_string(id), LogLevel::Warning);
         sqlite3_finalize(stmt);
         return res;
     }
