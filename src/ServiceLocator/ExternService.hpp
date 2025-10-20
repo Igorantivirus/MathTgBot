@@ -8,7 +8,7 @@ namespace service
     {
         Services::instance().log->log(message, level);
     }
-    static ResponseConfig config(const std::string& key)
+    static ResponseConfig config()
     {
         return *Services::instance().config;
     }
