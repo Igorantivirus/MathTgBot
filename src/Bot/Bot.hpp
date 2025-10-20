@@ -19,8 +19,10 @@ public:
         bot_.getEvents().onInlineQuery(      std::bind(&Bot::onInlineQuery,       this, std::placeholders::_1));
         bot_.getEvents().onCallbackQuery(    std::bind(&Bot::onCallbackQuery,     this, std::placeholders::_1));
 
+        bot_.getEvents().onCommand("help",          std::bind(&Bot::help,    this, std::placeholders::_1));
         bot_.getEvents().onCommand("start",         std::bind(&Bot::start,    this, std::placeholders::_1));
         bot_.getEvents().onCommand("settings",      std::bind(&Bot::settings, this, std::placeholders::_1));
+        bot_.getEvents().onCommand("mathinfo",      std::bind(&Bot::mathinfo, this, std::placeholders::_1));
     }
 
     void run()
@@ -56,10 +58,18 @@ private:
 
 private:
 
+    void sendMessage(const std::int64_t id, const std::string& msg, TgBot::InlineKeyboardMarkup::Ptr kb = nullptr, bool useMd = true)
+    {
+        const char* type = useMd ? "Markdown" : "";
+        bot_.getApi().sendMessage(id, msg, false, 0, kb, type);
+    }
+
+private:
+
     void onNonCommandMessage(TgBot::Message::Ptr message)
     {
         std::string res = responser_.onMessage(message->text, message->from->id);
-        bot_.getApi().sendMessage(message->chat->id, res);
+        sendMessage(message->chat->id, res, nullptr, false);
     }
 
     void onInlineQuery(const TgBot::InlineQuery::Ptr& query)
@@ -91,7 +101,7 @@ private:
         std::string setsStr = Convert::toString(sets);
         auto kb = generator_.makeSettingsKb();
 
-        bot_.getApi().editMessageText(setsStr, query->message->chat->id, query->message->messageId, "", "", false, kb);
+        bot_.getApi().editMessageText(setsStr, query->message->chat->id, query->message->messageId, "", "Markdown", false, kb);
     }
 
 private:
@@ -99,14 +109,22 @@ private:
     void start(TgBot::Message::Ptr message)
     {
         responser_.start(message->chat->id);
+        sendMessage(message->chat->id, service::config().start);
     }
-
     void settings(TgBot::Message::Ptr message)
     {
         auto sets = responser_.printSettings(message->chat->id);
         std::string setsStr = Convert::toString(sets);
         
         auto kb = generator_.makeSettingsKb();
-        bot_.getApi().sendMessage(message->chat->id, setsStr, false, 0, kb);
+        sendMessage(message->chat->id, setsStr, kb);
+    }
+    void help(TgBot::Message::Ptr message)
+    {
+        sendMessage(message->chat->id, service::config().help);
+    }
+    void mathinfo(TgBot::Message::Ptr message)
+    {
+        sendMessage(message->chat->id, service::config().mathinfo);
     }
 };
