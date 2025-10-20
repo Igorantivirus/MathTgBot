@@ -36,6 +36,7 @@ Dependencies:
 
    ```sh
    git clone https://github.com/Igorantivirus/MathTgBot
+   cd MathTgBot
    ```
 2. <b>Generate CMake files</b>
 

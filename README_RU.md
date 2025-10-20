@@ -36,6 +36,7 @@
    
    ```sh
    git clone https://github.com/Igorantivirus/MathTgBot
+   cd MathTgBot
    ```
 2. <b>Генерация CMake</b>
    
@@ -64,4 +65,3 @@
 <h2>Лицензия</h2>
 
 **MIT License**
-
