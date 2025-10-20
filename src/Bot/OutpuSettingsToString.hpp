@@ -8,12 +8,6 @@
 #include <ServiceLocator/ExternService.hpp>
 #include <StringUtility.hpp>
 
-template <class... Args>
-std::string format_rt(std::string_view fmt, Args&&... args) {
-    // Бросает std::format_error при плохом формате/несоответствии типов.
-    return std::vformat(fmt, std::make_format_args(std::forward<Args>(args)...));
-}
-
 namespace Convert
 {
     static std::string toString(const mathWorker::ComplexOutputType v)
