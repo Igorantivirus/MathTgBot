@@ -61,7 +61,21 @@ private:
     void sendMessage(const std::int64_t id, const std::string& msg, TgBot::InlineKeyboardMarkup::Ptr kb = nullptr, bool useMd = true)
     {
         const char* type = useMd ? "Markdown" : "";
-        bot_.getApi().sendMessage(id, msg, false, 0, kb, type);
+        #ifdef _WIN32
+        
+        #else
+        bot_.getApi().sendMessage(id, msg, nullptr, 0, kb, type);
+        #endif
+    }
+    void changeMessage(const std::int64_t charId, const std::int64_t msgId, const std::string& msg, TgBot::InlineKeyboardMarkup::Ptr kb = nullptr, bool useMd = true)
+    {
+        const char* type = useMd ? "Markdown" : "";
+
+        #ifdef _WIN32
+        bot_.getApi().editMessageText(msg, charId, msgId, "", type, false, kb);
+        #else
+        bot_.getApi().editMessageText(msg, charId, msgId, "", type, nullptr, kb);
+        #endif
     }
 
 private:
@@ -101,7 +115,7 @@ private:
         std::string setsStr = Convert::toString(sets);
         auto kb = generator_.makeSettingsKb();
 
-        bot_.getApi().editMessageText(setsStr, query->message->chat->id, query->message->messageId, "", "Markdown", false, kb);
+        changeMessage(query->message->chat->id, query->message->messageId, setsStr, kb);
     }
 
 private:
