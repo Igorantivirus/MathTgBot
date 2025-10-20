@@ -8,3 +8,4 @@ cwd/
 CMakePresets.json
 
 src/BotApiKey.hpp
+assets/secretMainConfig.json
