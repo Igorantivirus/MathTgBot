@@ -20,23 +20,23 @@ namespace Convert
     {
         const std::array<std::string, 4> converter = 
         {
-            service::config().algebraic,
-            service::config().trigonometric,
-            service::config().indicative,
-            service::config().polar
+            service::responses().algebraic,
+            service::responses().trigonometric,
+            service::responses().indicative,
+            service::responses().polar
         };
         return converter[static_cast<std::size_t>(v)];
     }
     static std::string toString(const mathWorker::AngleOutputType v)
     {
-        return v == mathWorker::AngleOutputType::degrees ? service::config().degr : service::config().rads;
+        return v == mathWorker::AngleOutputType::degrees ? service::responses().degr : service::responses().rads;
     }
 
     static std::string toString(const OutputSettings& s)
     {
         return StringUtility::rtFormat
         (
-            service::config().settings, 
+            service::responses().settings, 
             {std::to_string(static_cast<int>(s.precession)), toString(s.angleType), toString(s.complexType)}    
         );
     }

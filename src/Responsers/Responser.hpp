@@ -17,7 +17,8 @@ class Responser
 public:
     Responser()
     {
-        db_.openFile("file.db");
+        db_.openFile("file.sqlite");
+        // db_.createFile("file.sqlite");
     }
 
     void start(const std::int64_t id)

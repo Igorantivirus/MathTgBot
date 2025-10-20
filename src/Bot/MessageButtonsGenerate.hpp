@@ -16,24 +16,24 @@ public:
     TgBot::InlineKeyboardMarkup::Ptr makeSettingsKb()
     {
         static TgBot::InlineKeyboardMarkup::Ptr kb;
-        // if(!kb)
+        if(!kb)
         {
             kb = std::make_shared<TgBot::InlineKeyboardMarkup>();
             kb->inlineKeyboard.push_back(generateButtons({
-                {service::config().rads, "set:angle:0"},
-                {service::config().degr, "set:angle:1"}
+                {service::responses().rads, "set:angle:0"},
+                {service::responses().degr, "set:angle:1"}
             }));
             
             kb->inlineKeyboard.push_back(generateButtons({
-                {service::config().algebraic, "set:numt:0"},
-                {service::config().trigonometric, "set:numt:1"},
-                {service::config().indicative, "set:numt:2"},
-                {service::config().polar, "set:numt:3"}
+                {service::responses().algebraic, "set:numt:0"},
+                {service::responses().trigonometric, "set:numt:1"},
+                {service::responses().indicative, "set:numt:2"},
+                {service::responses().polar, "set:numt:3"}
             }));
 
             kb->inlineKeyboard.push_back(generateButtons({
-                {service::config().precessionAdd, "add:prec:1"},
-                {service::config().precessionBack, "add:prec:-1"}
+                {service::responses().precessionAdd, "add:prec:1"},
+                {service::responses().precessionBack, "add:prec:-1"}
             }));
         }
 
