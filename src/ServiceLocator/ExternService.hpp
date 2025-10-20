@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Configs/MainConfig.hpp"
 #include "GeneralLocator.hpp"
 
 namespace service
@@ -8,8 +9,12 @@ namespace service
     {
         Services::instance().log->log(message, level);
     }
-    static ResponseConfig config()
+    static ResponseConfig responses()
     {
-        return *Services::instance().config;
+        return *Services::instance().responseConfig;
+    }
+    static MainConfig config()
+    {
+        return *Services::instance().mainConfig;
     }
 }
