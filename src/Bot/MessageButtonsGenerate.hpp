@@ -8,30 +8,32 @@
 
 #include <MathWorker/StringConvert/ComplexStringConverter.hpp>
 
+#include <ServiceLocator/ExternService.hpp>
+
 class MessageButtonsGenerate
 {
 public:
     TgBot::InlineKeyboardMarkup::Ptr makeSettingsKb()
     {
         static TgBot::InlineKeyboardMarkup::Ptr kb;
-        if(!kb)
+        // if(!kb)
         {
             kb = std::make_shared<TgBot::InlineKeyboardMarkup>();
             kb->inlineKeyboard.push_back(generateButtons({
-                {"Радианы", "set:angle:0"},
-                {"Градусы", "set:angle:1"}
+                {service::config().rads, "set:angle:0"},
+                {service::config().degr, "set:angle:1"}
             }));
             
             kb->inlineKeyboard.push_back(generateButtons({
-                {"Алгебр", "set:numt:0"},
-                {"Триган", "set:numt:1"},
-                {"Степен", "set:numt:2"},
-                {"Полярн", "set:numt:3"}
+                {service::config().algebraic, "set:numt:0"},
+                {service::config().trigonometric, "set:numt:1"},
+                {service::config().indicative, "set:numt:2"},
+                {service::config().polar, "set:numt:3"}
             }));
 
             kb->inlineKeyboard.push_back(generateButtons({
-                {"Знаки: +1", "add:prec:1"},
-                {"Знаки: -1", "add:prec:-1"}
+                {service::config().precessionAdd, "add:prec:1"},
+                {service::config().precessionBack, "add:prec:-1"}
             }));
         }
 
