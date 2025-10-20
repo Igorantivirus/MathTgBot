@@ -8,12 +8,12 @@
 struct MainConfig
 {
     std::string tgApiKey;
-    std::string dataBaseFile;
     std::string responseConfig;
+    std::string dataBaseFile;
     std::string logFile;
     bool prinToConsole = {};
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(MainConfig, tgApiKey, dataBaseFile, responseConfig, logFile, prinToConsole)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(MainConfig, tgApiKey, responseConfig, dataBaseFile, logFile, prinToConsole)
 
     static MainConfig load(const std::string &config_path)
     {
