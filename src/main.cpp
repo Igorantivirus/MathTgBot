@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 #if defined(_WIN32) || defined(_WIN64)
     std::system("chcp 65001 > nul");
 #endif
-    Services::initInstance(argv[0]);
+    Services::initInstance(argv[1]);
 
     Bot bot(service::config().tgApiKey);
     bot.run();
