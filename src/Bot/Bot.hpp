@@ -19,7 +19,7 @@ public:
         bot_.getEvents().onInlineQuery(      std::bind(&Bot::onInlineQuery,       this, std::placeholders::_1));
         bot_.getEvents().onCallbackQuery(    std::bind(&Bot::onCallbackQuery,     this, std::placeholders::_1));
 
-        bot_.getEvents().onCommand("help",          std::bind(&Bot::help,    this, std::placeholders::_1));
+        bot_.getEvents().onCommand("help",          std::bind(&Bot::help,     this, std::placeholders::_1));
         bot_.getEvents().onCommand("start",         std::bind(&Bot::start,    this, std::placeholders::_1));
         bot_.getEvents().onCommand("settings",      std::bind(&Bot::settings, this, std::placeholders::_1));
         bot_.getEvents().onCommand("mathinfo",      std::bind(&Bot::mathinfo, this, std::placeholders::_1));
